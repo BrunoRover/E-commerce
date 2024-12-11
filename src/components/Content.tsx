@@ -1,8 +1,8 @@
 import Image from "next/image";
 import React from "react";
-import img from "../../public/whey.png";
-import creatina from "../../public/creatina.webp";
-import bcaa from "../../public/BCAA.png";
+import img from "../../public/img/whey.png";
+import creatina from "../../public/img/creatina.webp";
+import bcaa from "../../public/img/BCAA.png";
 import {
   FaDumbbell,
   FaHeartbeat,
@@ -14,6 +14,7 @@ import {
   FaRedo,
   FaSmile,
 } from "react-icons/fa";
+import TopProducts from "./TopProducts";
 
 function Content() {
   const benefits = [
@@ -127,6 +128,7 @@ function Content() {
           </div>
         </div>
       </div>
+      <TopProducts />
     </div>
   );
 }
