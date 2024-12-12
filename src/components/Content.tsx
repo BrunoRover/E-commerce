@@ -1,6 +1,7 @@
 import TopProducts from "./TopProducts";
 import { Benefit } from "./Benefit";
-import FAQ from "./Faq";
+import Header from "@/components/Header";
+import FAQ from "./FAQ";
 import { BestSelling } from "./BestSelling";
 import OffersCarousel from "./OffersCarousel";
 import Testimonials from "./Testimonials ";
@@ -9,6 +10,7 @@ import Footer from "./Footer";
 function Content() {
   return (
     <div>
+      <Header />
       <OffersCarousel />
       <BestSelling />
       <Benefit />
