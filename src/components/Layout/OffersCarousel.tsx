@@ -4,9 +4,9 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
 import { Navigation, Autoplay } from "swiper/modules";
-import img1 from "../../public/img/whey.png"; // Substitua com suas imagens
-import img2 from "../../public/img/creatina.webp";
-import img3 from "../../public/img/bcaa.png";
+import img1 from "../../../public/img/whey.png";
+import img2 from "../../../public/img/creatina.webp";
+import img3 from "../../../public/img/bcaa2.png";
 
 const offers = [
   {

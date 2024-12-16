@@ -1,6 +1,6 @@
 import TopProducts from "./TopProducts";
 import { Benefit } from "./Benefit";
-import Header from "@/components/Header";
+import Header from "@/components/Layout/Header";
 import FAQ from "./FAQ";
 import { BestSelling } from "./BestSelling";
 import OffersCarousel from "./OffersCarousel";

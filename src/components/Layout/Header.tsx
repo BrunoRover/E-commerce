@@ -32,7 +32,7 @@ function Header() {
               href="/product"
               className="text-xl bg-foreground text-background py-2 px-4 rounded-full"
             >
-              Comprar agora
+              Entrar
             </Link>
           </li>
         </ul>

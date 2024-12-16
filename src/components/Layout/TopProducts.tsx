@@ -6,16 +6,16 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
-import product1 from "../../public/img/creatina.webp";
-import product2 from "../../public/img/whey.png";
-import product3 from "../../public/img/haze.webp";
-import product4 from "../../public/img/arginine.webp";
-import product5 from "../../public/img/creatina2.webp";
-import product6 from "../../public/img/whey2.webp";
-import product7 from "../../public/img/insanity.webp";
-import product8 from "../../public/img/multivitaminico.webp";
-import product9 from "../../public/img/albumina.png";
-import product10 from "../../public/img/hot-termogenico.webp";
+import product1 from "../../../public/img/creatina.webp";
+import product2 from "../../../public/img/whey.png";
+import product3 from "../../../public/img/haze.webp";
+import product4 from "../../../public/img/arginine.webp";
+import product5 from "../../../public/img/creatina2.webp";
+import product6 from "../../../public/img/whey2.webp";
+import product7 from "../../../public/img/insanity.webp";
+import product8 from "../../../public/img/multivitaminico.webp";
+import product9 from "../../../public/img/albumina.png";
+import product10 from "../../../public/img/hot-termogenico.webp";
 
 const TopProducts = () => {
   const products = [

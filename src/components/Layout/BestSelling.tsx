@@ -1,8 +1,8 @@
 import Image from "next/image";
 import React from "react";
-import img from "../../public/img/whey.png";
-import creatina from "../../public/img/creatina.webp";
-import bcaa from "../../public/img/BCAA.png";
+import img from "../../../public/img/whey.png";
+import creatina from "../../../public/img/creatina.webp";
+import bcaa from "../../../public/img/bcaa2.png";
 export function BestSelling() {
   return (
     <div>

@@ -2,9 +2,9 @@ import "swiper/css";
 import "swiper/css/pagination";
 
 import Image from "next/image";
-import mulher from "../../public/img/mulher.avif";
-import mulher2 from "../../public/img/mulher2.jpg";
-import homem from "../../public/img/homem.avif";
+import mulher from "../../../public/img/mulher.avif";
+import mulher2 from "../../../public/img/mulher2.jpg";
+import homem from "../../../public/img/homem.avif";
 
 const testimonials = [
   {
