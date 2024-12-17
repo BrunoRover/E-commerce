@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import Image from "next/image";
-import Header from "@/components/Header";
+import Header from "../../../src/components/Layout/Header";
 
 import img from "../../../public/img/whey.png";
 

@@ -1,31 +1,30 @@
-import mongoose, { ConnectOptions } from "mongoose";
+import mongoose from "mongoose";
 
-const MONGODB_URI = process.env.MONGODB_URI as string;
+const MONGODB_URI = process.env.MONGODB_URI || "http://localhost:3000/";
 
 if (!MONGODB_URI) {
-  throw new Error(
-    "Por favor, defina a variável MONGODB_URI no arquivo .env.local"
-  );
+  throw new Error("A variável de ambiente MONGODB_URI não foi definida.");
 }
 
-let isConnected = false;
+let cached = (global as any).mongoose;
 
-export async function connectToDatabase(): Promise<typeof mongoose> {
-  if (isConnected) {
-    console.log("Já conectado ao MongoDB.");
-    return mongoose;
-  }
-
-  try {
-    const connection = await mongoose.connect(MONGODB_URI, {
-      useNewUrlParser: true,
-    } as ConnectOptions);
-
-    isConnected = true;
-    console.log("Conectado ao MongoDB!");
-    return connection;
-  } catch (error) {
-    console.error("Erro ao conectar ao MongoDB:", error);
-    throw new Error("Falha na conexão com o MongoDB.");
-  }
+if (!cached) {
+  cached = (global as any).mongoose = { conn: null, promise: null };
 }
+
+async function dbConnect() {
+  if (cached.conn) {
+    return cached.conn;
+  }
+
+  if (!cached.promise) {
+    cached.promise = mongoose.connect(MONGODB_URI, {
+      bufferCommands: false,
+    });
+  }
+
+  cached.conn = await cached.promise;
+  return cached.conn;
+}
+
+export default dbConnect;
