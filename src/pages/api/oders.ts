@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import dbConnect from "../../lib/mongodb"; // Função de conexão com o MongoDB
-import { Oders } from "../../models/oders.model";
+import { Oders } from "../../models/oder.model";
 
 // Função de tratamento da API
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {

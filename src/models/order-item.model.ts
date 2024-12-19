@@ -2,7 +2,7 @@ import mongoose, { Schema, Document } from "mongoose";
 
 interface IOrderItem extends Document {
   quantity: number;
-  product: [];
+  product: string;
 }
 
 const orderItemSchema: Schema = new Schema({

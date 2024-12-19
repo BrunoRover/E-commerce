@@ -21,7 +21,7 @@ const productSchema: Schema = new Schema({
   description: { type: String },
   richDescription: { type: String, default: "" },
   image: { type: String, default: "" },
-  images: { type: [{ String }] },
+  images: { type: String },
   brand: { type: String, default: "" },
   price: { type: Number, default: 0 },
   category: {
@@ -36,7 +36,8 @@ const productSchema: Schema = new Schema({
   countInStock: { type: Number, required: true, min: 0, max: 255 },
   rating: { type: Number, default: 0 },
   isFeatured: { type: Boolean, default: false },
-  dateCreated: { type: Boolean, default: false },
+  dateCreated: { type: Date, default: false },
 });
 
-export const Product = mongoose.model<IProduct>("Product", productSchema);
+export const Product =
+  mongoose.models.Product || mongoose.model<IProduct>("Product", productSchema);
