@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import dbConnect from "../../lib/mongodb"; // Função de conexão com o MongoDB
-import { Product } from "../../models/product.model";
+import { OrderItem } from "../../models/oders.model";
 
 // Função de tratamento da API
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -9,8 +9,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   switch (req.method) {
     case "GET":
       try {
-        const products = await Product.find();
-        res.status(200).json(products);
+        const odersitem = await OrderItem.find();
+        res.status(200).json(odersitem);
       } catch (error) {
         res.status(500).json({ error: "Failed to fetch products" });
       }
@@ -18,9 +18,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     case "POST":
       try {
-        const product = new Product(req.body);
-        await product.save();
-        res.status(201).json(product);
+        const odersitem = new OrderItem(req.body);
+        await odersitem.save();
+        res.status(201).json(odersitem);
       } catch (error) {
         res.status(400).json({ error: error.message });
       }
