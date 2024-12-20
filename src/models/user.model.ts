@@ -26,4 +26,12 @@ const userSchema: Schema = new Schema({
   country: { type: String, default: "" },
 });
 
-export const User = mongoose.model<IUser>("User", userSchema);
+userSchema.virtual("id").get(function () {
+  return (this._id as mongoose.Types.ObjectId).toHexString();
+});
+
+userSchema.set("toJSON", {
+  virtuals: true,
+});
+export const User =
+  mongoose.models.User || mongoose.model<IUser>("User", userSchema);

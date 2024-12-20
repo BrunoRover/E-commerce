@@ -1,10 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import dbConnect from "../../lib/mongodb"; // Função de conexão com o MongoDB
+import dbConnect from "../../lib/mongodb";
 import { User } from "../../models/user.model";
+import bcrypt from "bcryptjs";
 
-// Função de tratamento da API
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  await dbConnect(); // Garantir conexão com o banco
+  await dbConnect();
 
   switch (req.method) {
     case "GET":
@@ -18,7 +18,38 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     case "POST":
       try {
-        const user = new User(req.body);
+        const {
+          name,
+          email,
+          passwordHash,
+          phone,
+          isAdmin,
+          street,
+          apartment,
+          zip,
+          city,
+          country,
+        } = req.body;
+        if (!passwordHash) {
+          return res.status(400).json({ error: "Password is required." });
+        }
+
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(passwordHash, salt);
+
+        const user = new User({
+          name,
+          email,
+          passwordHash: hashedPassword,
+          phone,
+          isAdmin,
+          street,
+          apartment,
+          zip,
+          city,
+          country,
+        });
+
         await user.save();
         res.status(201).json(user);
       } catch (error) {
