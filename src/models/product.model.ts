@@ -21,7 +21,7 @@ const productSchema: Schema = new Schema({
   description: { type: String },
   richDescription: { type: String, default: "" },
   image: { type: String, default: "" },
-  images: { type: String },
+  images: { type: [String], default: [] },
   brand: { type: String, default: "" },
   price: { type: Number, default: 0 },
   category: {
@@ -37,6 +37,14 @@ const productSchema: Schema = new Schema({
   rating: { type: Number, default: 0 },
   isFeatured: { type: Boolean, default: false },
   dateCreated: { type: Date, default: false },
+});
+
+productSchema.virtual("id").get(function () {
+  return (this._id as mongoose.Types.ObjectId).toHexString();
+});
+
+productSchema.set("toJSON", {
+  virtuals: true,
 });
 
 export const Product =
