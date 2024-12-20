@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import dbConnect from "../../lib/mongodb";
 import { User } from "../../models/user.model";
 import bcrypt from "bcryptjs";
+import mongoose from "mongoose";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   await dbConnect();
@@ -9,15 +10,50 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   switch (req.method) {
     case "GET":
       try {
-        const user = await User.find();
-        res.status(200).json(user);
+        const { id } = req.query;
+        if (id) {
+          if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ error: "Invalid user ID" });
+          }
+
+          const user = await User.findById(id).select("-passwordHash");
+          if (!user) {
+            return res.status(404).json({ error: "User not found" });
+          }
+          return res.status(200).json(user);
+        }
+
+        const users = await User.find().select("-passwordHash");
+        res.status(200).json(users);
       } catch (error) {
-        res.status(500).json({ error: "Failed to fetch products" });
+        res.status(500).json({ error: "Failed to fetch users" });
       }
       break;
 
     case "POST":
       try {
+        const { login } = req.query;
+        if (login) {
+          const { email, passwordHash } = req.body;
+
+          if (!email || !passwordHash) {
+            return res
+              .status(400)
+              .json({ error: "Email and password are required." });
+          }
+
+          const user = await User.findOne({ email });
+          if (!user) {
+            return res.status(400).json({ error: "User not found." });
+          }
+
+          const isMatch = await bcrypt.compare(passwordHash, user.passwordHash);
+          if (!isMatch) {
+            return res.status(400).json({ error: "Invalid password." });
+          }
+
+          return res.status(200).json(user);
+        }
         const {
           name,
           email,
