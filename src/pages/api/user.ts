@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import dbConnect from "../../lib/mongodb";
 import { User } from "../../models/user.model";
 import bcrypt from "bcryptjs";
+import jwk from "jsonwebtoken";
 import mongoose from "mongoose";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -48,7 +49,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           }
 
           const isMatch = await bcrypt.compare(passwordHash, user.passwordHash);
-          if (!isMatch) {
+          if (isMatch) {
+            const token = jwk.sign(
+              {
+                userID: user.id,
+              },
+              "secret"
+            );
+            return res.status(200).send({ user: user.email, token: token });
+          } else {
             return res.status(400).json({ error: "Invalid password." });
           }
 
