@@ -14,6 +14,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (!session) {
     return res.status(401).json({ error: "Unauthorized. Please log in." });
   }
+  if (!session.user || !session.user.isAdmin) {
+    return res.status(403).json({ error: "Access denied. Admins only." });
+  }
 
   switch (req.method) {
     case "GET":
