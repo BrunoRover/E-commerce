@@ -1,6 +1,8 @@
 import cors from "cors";
+import { getServerSession } from "next-auth";
 import type { NextApiRequest, NextApiResponse } from "next";
 import dbConnect from "@/lib/mongodb";
+import { authOptions } from "../../pages/api/auth/[...nextauth]";
 
 await dbConnect();
 
@@ -10,6 +12,11 @@ const handler = async (
 ): Promise<void> => {
   if (req.method === "GET") {
     try {
+      const session = await getServerSession(req, res, authOptions);
+      if (!session) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+
       const data = { message: "Hello, world!" };
       res.status(200).json(data);
     } catch (error) {

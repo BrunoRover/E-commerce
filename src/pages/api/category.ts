@@ -1,9 +1,16 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import dbConnect from "../../lib/mongodb";
 import { Category } from "../../models/category.model";
+import { getServerSession } from "next-auth";
+import { authOptions } from "./auth/[...nextauth]";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   await dbConnect();
+
+  const session = await getServerSession(req, res, authOptions);
+  if (!session) {
+    return res.status(401).json({ error: "Unauthorized." });
+  }
 
   switch (req.method) {
     case "GET":

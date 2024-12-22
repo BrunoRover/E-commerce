@@ -1,4 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "./auth/[...nextauth]";
 import dbConnect from "../../lib/mongodb";
 import { User } from "../../models/user.model";
 import bcrypt from "bcryptjs";
@@ -7,6 +9,11 @@ import mongoose from "mongoose";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   await dbConnect();
+
+  const session = await getServerSession(req, res, authOptions);
+  if (!session) {
+    return res.status(401).json({ error: "Unauthorized. Please log in." });
+  }
 
   switch (req.method) {
     case "GET":
@@ -60,9 +67,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           } else {
             return res.status(400).json({ error: "Invalid password." });
           }
-
-          return res.status(200).json(user);
         }
+
         const {
           name,
           email,
@@ -75,6 +81,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           city,
           country,
         } = req.body;
+
         if (!passwordHash) {
           return res.status(400).json({ error: "Password is required." });
         }
