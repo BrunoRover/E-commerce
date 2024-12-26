@@ -9,7 +9,24 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   switch (req.method) {
     case "GET":
       try {
-        const odersList = await Order.find();
+        const { id } = req.query;
+
+        if (id) {
+          const order = await Order.findById(id)
+            .populate("user", "name")
+            .populate({
+              path: "orderItems",
+              populate: { path: "product", populate: "category" },
+            });
+          if (!order) {
+            return res.status(404).json({ error: "Order not found" });
+          }
+          return res.status(200).json(order);
+        }
+
+        const odersList = await Order.find()
+          .populate("user", "name")
+          .sort({ dateOrdered: -1 });
         res.status(200).json(odersList);
       } catch (error) {
         res.status(500).json({ error: "Failed to fetch products" });
@@ -73,6 +90,50 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       }
       break;
 
+    case "PUT":
+      try {
+        const { id } = req.query;
+
+        const updatedOrder = await Order.findByIdAndUpdate(
+          id,
+          { status: req.body.status },
+          { new: true }
+        );
+
+        if (!updatedOrder) {
+          return res.status(404).json({ error: "Order not found" });
+        }
+
+        res.status(200).json(updatedOrder);
+      } catch (error) {
+        console.error("Error updating Order:", error);
+        res.status(400).json({ error: error.message });
+      }
+      break;
+
+    case "DELETE":
+      try {
+        const { id } = req.query;
+
+        const order = await Order.findById(id);
+        if (!order) {
+          return res.status(404).json({ error: "Order not found" });
+        }
+
+        await Promise.all(
+          order.orderItems.map(async (orderItem) => {
+            await OrderItem.findByIdAndDelete(orderItem);
+          })
+        );
+
+        await Order.findByIdAndDelete(id);
+
+        res.status(200).json({ message: "Order deleted successfully" });
+      } catch (error) {
+        console.error("Error deleting order:", error);
+        res.status(400).json({ error: error.message });
+      }
+      break;
     default:
       res.setHeader("Allow", ["GET", "POST"]);
       res.status(405).end(`Method ${req.method} Not Allowed`);
