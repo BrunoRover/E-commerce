@@ -9,7 +9,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   switch (req.method) {
     case "GET":
       try {
-        const { id } = req.query;
+        const { id, totalSale, count, userOrder } = req.query;
 
         if (id) {
           const order = await Order.findById(id)
@@ -22,6 +22,54 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             return res.status(404).json({ error: "Order not found" });
           }
           return res.status(200).json(order);
+        }
+
+        if (totalSale) {
+          const totalSales = await Order.aggregate([
+            { $group: { _id: null, totalSale: { $sum: "$totalPrice" } } },
+          ]);
+
+          if (!totalSales.length) {
+            return res
+              .status(400)
+              .json({ error: "The order sales cannot be generated." });
+          }
+
+          return res.status(200).json({ totalSale: totalSales[0].totalSale });
+        }
+        if (count) {
+          try {
+            const orderCount = await Order.countDocuments();
+            return res.status(200).json({ count: orderCount });
+          } catch (error) {
+            console.error("Error counting Orders:", error);
+            return res.status(500).json({ error: "Failed to count Orders" });
+          }
+        }
+        if (userOrder) {
+          const { userId } = req.query;
+
+          if (!userId) {
+            return res
+              .status(400)
+              .json({ error: "Missing userId in query parameters." });
+          }
+
+          try {
+            const userOrderList = await Order.find({ user: userId })
+              .populate({
+                path: "orderItems",
+                populate: { path: "product", populate: "category" },
+              })
+              .sort({ dateOrdered: -1 });
+
+            return res.status(200).json(userOrderList);
+          } catch (error) {
+            console.error("Error fetching user orders:", error);
+            return res
+              .status(500)
+              .json({ error: "Failed to fetch user orders." });
+          }
         }
 
         const odersList = await Order.find()
