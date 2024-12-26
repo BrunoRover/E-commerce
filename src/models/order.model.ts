@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document } from "mongoose";
 
-interface IOders extends Document {
+interface IOrders extends Document {
   orderItems: [];
   shippingAddress1: string;
   shippingAddress2: string;
@@ -14,7 +14,7 @@ interface IOders extends Document {
   dateOrdered: Date;
 }
 
-const odersSchema: Schema = new Schema({
+const ordersSchema: Schema = new Schema({
   orderItems: [
     {
       type: mongoose.Schema.Types.ObjectId,
@@ -34,4 +34,13 @@ const odersSchema: Schema = new Schema({
   dateOrdered: { type: Date, default: Date.now },
 });
 
-export const Oders = mongoose.model<IOders>("Oders", odersSchema);
+ordersSchema.virtual("id").get(function () {
+  return (this._id as mongoose.Types.ObjectId).toHexString();
+});
+
+ordersSchema.set("toJSON", {
+  virtuals: true,
+});
+
+export const Order =
+  mongoose.models.Order || mongoose.model<IOrders>("Order", ordersSchema);
