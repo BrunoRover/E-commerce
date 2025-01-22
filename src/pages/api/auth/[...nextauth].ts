@@ -4,6 +4,24 @@ import bcrypt from "bcryptjs";
 import { User } from "../../../models/user.model";
 import dbConnect from "../../../lib/mongodb";
 
+declare module "next-auth" {
+  interface Session {
+    user: {
+      id: string;
+      name: string; 
+      email: string;
+      isAdmin: boolean;
+    };
+  }
+
+  interface JWT {
+    id: string;
+    name: string; 
+    email: string;
+    isAdmin: boolean;
+  }
+}
+
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
@@ -51,6 +69,8 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
+        token.name = user.name; 
+        token.email = user.email;
         token.isAdmin = user.isAdmin;
       }
       return token;
@@ -59,6 +79,7 @@ export const authOptions: NextAuthOptions = {
       if (token) {
         session.user = {
           id: token.id as string,
+          name: token.name as string, 
           email: token.email as string,
           isAdmin: token.isAdmin as boolean,
         };
@@ -66,6 +87,7 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
   },
+  
   pages: {
     signIn: "/auth/signin",
   },

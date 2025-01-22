@@ -63,6 +63,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             const token = jwk.sign(
               {
                 userID: user.id,
+               
               },
               "secret"
             );

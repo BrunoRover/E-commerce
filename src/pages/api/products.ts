@@ -96,7 +96,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           }
         }
 
-        const products = await Product.find(filter).populate("category");
+        const products = await Product.find();
         return res.status(200).json(products);
       } catch (error) {
         console.error("Error fetching products:", error);
