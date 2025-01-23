@@ -37,7 +37,7 @@ function Header() {
           ) : (
             <li>
               <Link
-                href="/auth/singIn"
+                href="/auth/signIn"
                 className="text-xl bg-foreground text-background py-2 px-4 rounded-full"
               >
                 Entrar
