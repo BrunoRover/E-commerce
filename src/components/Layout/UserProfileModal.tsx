@@ -23,21 +23,20 @@ interface User {
     timestamp: string;
   }[];
 }
-
 const UserProfileModal = () => {
   const [user, setUser] = useState<User | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState<User | null>(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await fetch("/api/create-user"); // Substitua pelo endpoint correto da sua API
+        const response = await fetch("/api/create-user"); 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data: User = await response.json();
-        console.log("User data fetched:", data); // Log de depuração
         setUser(data);
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -48,14 +47,58 @@ const UserProfileModal = () => {
   }, []);
 
   const toggleModal = () => setIsOpen(!isOpen);
-  const toggleEdit = () => setIsEditing(!isEditing);
-
-  const handleSave = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Adicione a lógica de salvamento aqui
-    console.log("User data saved");
-    setIsEditing(false);
+  const toggleEdit = () => {
+    setIsEditing(!isEditing);
+    if (!isEditing && user) {
+      setFormData(user); 
+    }
   };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData!,
+      [id]: value,
+    }));
+  };
+
+  const handleSave = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!formData) return;
+  
+    try {
+      const response = await fetch(`/api/create-user?id=${user?._id}`, {
+        method: "PUT", 
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: user?._id, // Certifique-se de passar o ID do usuário
+          name: formData.name,
+          email: formData.email, 
+          phone: formData.phone,
+          street: formData.street,
+          apartment: formData.apartment,
+          zip: formData.zip,
+          city: formData.city,
+          country: formData.country,
+        }),
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
+  
+      const updatedUser = await response.json();
+      setUser(updatedUser);
+      setIsEditing(false);
+    } catch (error) {
+      console.error("Error updating user data:", error);
+      alert("Não foi possível salvar as alterações. Tente novamente.");
+    }
+  };
+  console.log("User ID being sent:", user?._id);
+
 
   if (!user) {
     return <div>Loading...</div>;
@@ -117,7 +160,8 @@ const UserProfileModal = () => {
                       <input
                         id="name"
                         type="text"
-                        defaultValue={user.name}
+                        value={formData?.name || user.name}
+                        onChange={handleChange}
                         className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                       />
                     </div>
@@ -130,7 +174,8 @@ const UserProfileModal = () => {
                       <input
                         id="email"
                         type="email"
-                        defaultValue={user.email}
+                        value={formData?.email || user.email}
+                        onChange={handleChange}
                         className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                       />
                     </div>
@@ -141,7 +186,8 @@ const UserProfileModal = () => {
                       <input
                         id="phone"
                         type="text"
-                        defaultValue={user.phone}
+                        value={formData?.phone || user.phone}
+                        onChange={handleChange}
                         className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                       />
                     </div>
@@ -152,7 +198,8 @@ const UserProfileModal = () => {
                       <input
                         id="street"
                         type="text"
-                        defaultValue={user.street}
+                        value={formData?.street || user.street}
+                        onChange={handleChange}
                         className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                       />
                     </div>
@@ -163,7 +210,8 @@ const UserProfileModal = () => {
                       <input
                         id="apartment"
                         type="text"
-                        defaultValue={user.apartment}
+                        value={formData?.apartment || user.apartment}
+                        onChange={handleChange}
                         className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                       />
                     </div>
@@ -174,7 +222,8 @@ const UserProfileModal = () => {
                       <input
                         id="city"
                         type="text"
-                        defaultValue={user.city}
+                        value={formData?.city || user.city}
+                        onChange={handleChange}
                         className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                       />
                     </div>
@@ -185,18 +234,8 @@ const UserProfileModal = () => {
                       <input
                         id="zip"
                         type="text"
-                        defaultValue={user.zip}
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="country">
-                        Country
-                      </label>
-                      <input
-                        id="country"
-                        type="text"
-                        defaultValue={user.country}
+                        value={formData?.zip || user.zip}
+                        onChange={handleChange}
                         className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                       />
                     </div>
@@ -298,12 +337,7 @@ const UserProfileModal = () => {
                         <span>{user.zip}</span>
                       </div>
                     </div>
-                    <div className="bg-gray-100 p-4 rounded-lg shadow hover:shadow-md transition duration-300 ease-in-out">
-                      <div className="flex items-center text-gray-800 font-medium">
-                        <FaGlobe className="mr-2" />
-                        <span>{user.country}</span>
-                      </div>
-                    </div>
+                    
                   </div>
                 </div>
               </div>
