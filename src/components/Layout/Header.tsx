@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { useSession } from "next-auth/react";
-import UserProfileModal from "./UserProfileModal";
+import UserProfileModal from "../User/UserProfileModal";
+
 
 function Header() {
   const { data: session } = useSession();

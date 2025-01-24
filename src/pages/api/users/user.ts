@@ -1,8 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "./auth/[...nextauth]";
-import dbConnect from "../../lib/mongodb";
-import { User } from "../../models/user.model";
+import { authOptions } from "../auth/[...nextauth]";
+import dbConnect from "../../../lib/mongodb";
+import { User } from "../../../models/user.model";
 import bcrypt from "bcryptjs";
 import mongoose from "mongoose";
 
