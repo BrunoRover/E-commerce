@@ -73,7 +73,7 @@ const UserProfileModal = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          id: user?._id, // Certifique-se de passar o ID do usuário
+          id: user?._id, 
           name: formData.name,
           email: formData.email, 
           phone: formData.phone,
